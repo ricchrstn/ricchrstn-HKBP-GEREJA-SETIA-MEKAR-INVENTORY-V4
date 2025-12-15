@@ -3,7 +3,33 @@
 @section('title', 'Tambah Pengajuan - Pengurus')
 
 @section('content')
-    <div class="w-full px-6 py-6 mx-auto">
+    <div id="pengajuan-create" class="w-full px-6 py-6 mx-auto">
+        <style>
+            /* Localized styling to make the form, tips and stats look polished even
+               if the main stylesheet is not available. Scoped to #pengajuan-create. */
+            #pengajuan-create .panel {
+                background: #ffffff;
+                border: 1px solid #e6e9ef;
+                border-radius: 12px;
+                box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+                overflow: hidden;
+            }
+            #pengajuan-create .panel .panel-header {
+                padding: 18px 24px;
+                border-bottom: 1px solid #eef2f6;
+                background: linear-gradient(90deg, rgba(248,250,252,1) 0%, rgba(255,255,255,1) 100%);
+            }
+            #pengajuan-create .panel .panel-body { padding: 20px 24px; }
+            #pengajuan-create .tip-item { padding: 12px 0; border-bottom: 1px dashed #f1f5f9; }
+            #pengajuan-create .tip-item:last-child { border-bottom: none; }
+            #pengajuan-create .tip-item h6 { margin: 0 0 6px 0; font-weight:700; color:#0f172a; }
+            #pengajuan-create .tip-item p { margin:0; color:#6b7280; font-size:0.92rem; }
+            #pengajuan-create .stat-box { padding: 18px; border-radius: 8px; background: #fbfdff; }
+            #pengajuan-create .stat-box h4 { margin:0; font-size:1.4rem; color:#0f172a; }
+            #pengajuan-create .stat-box small { color:#6b7280; display:block; margin-top:6px; }
+            #pengajuan-create .form-submit-row { padding: 18px 24px; border-top: 1px solid #eef2f6; background:#ffffff; }
+            @media (max-width: 1024px) { #pengajuan-create .panel .panel-header, #pengajuan-create .panel .panel-body { padding-left:16px; padding-right:16px; } }
+        </style>
         <!-- Header -->
         <div class="flex flex-wrap -mx-3">
             <div class="flex-none w-full max-w-full px-3">
@@ -65,27 +91,39 @@
                         <div class="p-6">
                             <div class="mb-4">
                                 <h6 class="text-blue-600"><i class="fas fa-box mr-2"></i>Nama Barang</h6>
-                                <p class="text-sm text-slate-400">Gunakan nama barang yang jelas dan spesifik untuk memudahkan identifikasi.</p>
+                                <p class="text-sm text-slate-400">Gunakan nama barang yang jelas dan spesifik (contoh: "Proyektor Epson X123").</p>
                             </div>
                             <div class="mb-4">
                                 <h6 class="text-blue-600"><i class="fas fa-list-ul mr-2"></i>Spesifikasi</h6>
-                                <p class="text-sm text-slate-400">Berikan detail spesifikasi barang yang dibutuhkan (ukuran, merk, warna, dll).</p>
+                                <p class="text-sm text-slate-400">Sertakan spesifikasi lengkap: merk, model, ukuran, warna, dan kebutuhan teknis jika perlu.</p>
                             </div>
                             <div class="mb-4">
-                                <h6 class="text-blue-600"><i class="fas fa-calculator mr-2"></i>Jumlah</h6>
-                                <p class="text-sm text-slate-400">Isi jumlah barang yang dibutuhkan sesuai dengan keperluan aktual.</p>
+                                <h6 class="text-blue-600"><i class="fas fa-sort-numeric-up mr-2"></i>Jumlah & Satuan</h6>
+                                <p class="text-sm text-slate-400">Masukkan jumlah barang (minimal 1) dan satuan yang sesuai (Unit, Buah, Paket, dll).</p>
+                            </div>
+                            <div class="mb-4">
+                                <h6 class="text-blue-600"><i class="fas fa-money-bill-wave mr-2"></i>Harga Satuan</h6>
+                                <p class="text-sm text-slate-400">Isi perkiraan harga satuan (angka tanpa tanda titik). Sistem akan menghitung total biaya dan K3 sebagai persentase dari saldo kas untuk analisis.</p>
+                            </div>
+                            <div class="mb-4">
+                                <h6 class="text-blue-600"><i class="fas fa-bell mr-2"></i>Tingkat Urgensi (K1)</h6>
+                                <p class="text-sm text-slate-400">Pilih tingkat urgensi 1 (Tidak Mendesak) sampai 5 (Sangat Penting). Nilai ini adalah kriteria Benefit dalam analisis.</p>
+                            </div>
+                            <div class="mb-4">
+                                <h6 class="text-blue-600"><i class="fas fa-boxes mr-2"></i>Ketersediaan Stok (K2)</h6>
+                                <p class="text-sm text-slate-400">Pilih ketersediaan stok di pasaran: 1 = Stok Habis (prioritas tinggi) hingga 5 = Sangat Banyak. Nilai ini adalah kriteria Cost.</p>
                             </div>
                             <div class="mb-4">
                                 <h6 class="text-blue-600"><i class="fas fa-calendar-alt mr-2"></i>Tanggal Kebutuhan</h6>
-                                <p class="text-sm text-slate-400">Tentukan tanggal kapan barang tersebut dibutuhkan untuk kegiatan.</p>
+                                <p class="text-sm text-slate-400">Tentukan tanggal paling lambat barang dibutuhkan. Tanggal tidak boleh sebelum hari ini.</p>
                             </div>
                             <div class="mb-4">
                                 <h6 class="text-blue-600"><i class="fas fa-comment-alt mr-2"></i>Alasan</h6>
-                                <p class="text-sm text-slate-400">Jelaskan alasan mengapa barang tersebut diajukan, semakin detail semakin baik.</p>
+                                <p class="text-sm text-slate-400">Jelaskan alasan dan konteks penggunaan barang (kegiatan, unit yang membutuhkan, estimasi durasi penggunaan).</p>
                             </div>
                             <div class="mb-4">
                                 <h6 class="text-blue-600"><i class="fas fa-file-alt mr-2"></i>Dokumen Pendukung</h6>
-                                <p class="text-sm text-slate-400">Upload dokumen pendukung seperti proposal, surat permintaan, atau penawaran harga.</p>
+                                <p class="text-sm text-slate-400">Unggah dokumen pendukung (PDF/DOC/DOCX, max 2MB) seperti proposal atau penawaran harga untuk memperkuat pengajuan.</p>
                             </div>
                         </div>
                     </div>

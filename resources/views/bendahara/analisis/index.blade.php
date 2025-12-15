@@ -1,7 +1,18 @@
 @extends('bendahara.dashboard.layouts.app')
 @section('title', 'Analisis TOPSIS - Bendahara')
 @section('content')
-    <div class="w-full px-6 py-6 mx-auto">
+    <div id="topsis-index" class="w-full px-6 py-6 mx-auto">
+        <style>
+            /* Fallback table styles for Analisis index page */
+            #topsis-index table { width: 100%; border-collapse: collapse; border: 1px solid #e5e7eb; }
+            #topsis-index thead th { background: #f8fafc; color: #111827; border-bottom: 2px solid #e5e7eb; padding: 12px; text-align: left; font-weight: 600; }
+            #topsis-index tbody td { border-bottom: 1px solid #e5e7eb; padding: 12px; color: #374151; vertical-align: middle; }
+            #topsis-index .bg-white { background-color: #ffffff !important; }
+            #topsis-index .shadow-soft-xl { box-shadow: 0 6px 18px rgba(15,23,42,0.06) !important; }
+            #topsis-index .rounded-2xl { border-radius: 12px !important; }
+            #topsis-index .inline-flex { display: inline-flex; align-items: center; justify-content: center; }
+            @media (max-width: 640px) { #topsis-index thead th, #topsis-index tbody td { padding: 8px; } }
+        </style>
         <!-- Header Section -->
         <div class="flex flex-wrap -mx-3 mb-6">
             <div class="w-full max-w-full px-3">

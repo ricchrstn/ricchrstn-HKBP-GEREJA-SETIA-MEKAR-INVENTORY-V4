@@ -1,7 +1,20 @@
 @extends('bendahara.dashboard.layouts.app')
 @section('title', 'Hasil Analisis TOPSIS - Bendahara')
 @section('content')
-    <div class="w-full px-6 py-6 mx-auto">
+    <div id="topsis-results" class="w-full px-6 py-6 mx-auto">
+        <style>
+            /* Fallback table styles for TOPSIS results page to ensure contrast
+               when main stylesheet is missing or not applied. Scoped to #topsis-results */
+            #topsis-results table { width: 100%; border-collapse: collapse; border: 1px solid #e5e7eb; }
+            #topsis-results thead th { background: #f8fafc; color: #111827; border-bottom: 2px solid #e5e7eb; padding: 12px; text-align: left; font-weight: 600; }
+            #topsis-results tbody td { border-bottom: 1px solid #e5e7eb; padding: 12px; color: #374151; }
+            #topsis-results .bg-white { background-color: #ffffff !important; }
+            #topsis-results .shadow-soft-xl { box-shadow: 0 6px 18px rgba(15,23,42,0.06) !important; }
+            #topsis-results .rounded-2xl { border-radius: 12px !important; }
+            #topsis-results .inline-flex { display: inline-flex; align-items: center; justify-content: center; }
+            /* Small responsive adjustment */
+            @media (max-width: 640px) { #topsis-results thead th, #topsis-results tbody td { padding: 8px; } }
+        </style>
         <!-- Header Section -->
         <div class="flex flex-wrap -mx-3 mb-6">
             <div class="w-full max-w-full px-3">
@@ -76,19 +89,24 @@
                                             <tr>
                                                 <td class="px-6 py-4 whitespace-nowrap">
                                                     @php
-                                                        $rankClass = '';
+                                                        // badge colors to match Langkah 7 style
                                                         if ($index == 0) {
-                                                            $rankClass = 'bg-yellow-100 text-yellow-800';
+                                                            $bg = '#F59E0B'; // amber/gold
+                                                            $fg = '#ffffff';
                                                         } elseif ($index == 1) {
-                                                            $rankClass = 'bg-gray-100 text-gray-800';
+                                                            $bg = '#9CA3AF'; // slate
+                                                            $fg = '#ffffff';
                                                         } elseif ($index == 2) {
-                                                            $rankClass = 'bg-amber-100 text-amber-800';
+                                                            $bg = '#F97316'; // orange
+                                                            $fg = '#ffffff';
+                                                        } else {
+                                                            $bg = '#F3F4F6'; // gray-100
+                                                            $fg = '#374151';
                                                         }
                                                     @endphp
-                                                    <span
-                                                        class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {{ $rankClass }}">
+                                                    <div style="width:36px; height:36px; border-radius:999px; display:inline-flex; align-items:center; justify-content:center; background:{{ $bg }}; color:{{ $fg }}; font-weight:700;">
                                                         {{ $index + 1 }}
-                                                    </span>
+                                                    </div>
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap">
                                                     <div class="text-sm font-medium text-gray-900">
@@ -296,33 +314,25 @@
                                 <h6 class="text-lg font-semibold text-slate-700 mb-3">Langkah 4: Solusi Ideal</h6>
                                 <p class="text-sm text-slate-500 mb-3">Menentukan solusi ideal positif (A<sup>+</sup>) dan
                                     solusi ideal negatif (A<sup>-</sup>)</p>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div class="bg-green-50 p-4 rounded-lg">
-                                        <h6 class="font-semibold text-green-800 mb-3">Solusi Ideal Positif (A<sup>+</sup>)
-                                        </h6>
-                                        <div class="space-y-2">
+                                <div style="overflow-x:auto;">
+                                    <table style="width:100%; border-collapse:collapse; border:1px solid #e5e7eb;">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align:left; padding:10px; background:#f1f5f9; border-bottom:1px solid #e5e7eb;">Kriteria</th>
+                                                <th style="text-align:left; padding:10px; background:#ecfdf5; border-bottom:1px solid #e5e7eb;">Solusi Ideal Positif (A<sup>+</sup>)</th>
+                                                <th style="text-align:left; padding:10px; background:#fff1f2; border-bottom:1px solid #e5e7eb;">Solusi Ideal Negatif (A<sup>-</sup>)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
                                             @foreach ($kriterias as $index => $kriteria)
-                                                <div class="flex justify-between">
-                                                    <span class="text-sm text-green-700">{{ $kriteria->nama }}:</span>
-                                                    <span
-                                                        class="text-sm font-medium text-green-800">{{ number_format($solusiIdealPositif[$index], 4) }}</span>
-                                                </div>
+                                                <tr>
+                                                    <td style="padding:10px; border-top:1px solid #f3f4f6; color:#0f172a;">{{ $kriteria->nama }}</td>
+                                                    <td style="padding:10px; border-top:1px solid #f3f4f6; color:#065f46;">{{ number_format($solusiIdealPositif[$index], 4) }}</td>
+                                                    <td style="padding:10px; border-top:1px solid #f3f4f6; color:#9f1239;">{{ number_format($solusiIdealNegatif[$index], 4) }}</td>
+                                                </tr>
                                             @endforeach
-                                        </div>
-                                    </div>
-                                    <div class="bg-red-50 p-4 rounded-lg">
-                                        <h6 class="font-semibold text-red-800 mb-3">Solusi Ideal Negatif (A<sup>-</sup>)
-                                        </h6>
-                                        <div class="space-y-2">
-                                            @foreach ($kriterias as $index => $kriteria)
-                                                <div class="flex justify-between">
-                                                    <span class="text-sm text-red-700">{{ $kriteria->nama }}:</span>
-                                                    <span
-                                                        class="text-sm font-medium text-red-800">{{ number_format($solusiIdealNegatif[$index], 4) }}</span>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
 
@@ -366,32 +376,21 @@
                             <!-- Langkah 6: Nilai Preferensi -->
                             <div class="mb-8">
                                 <h6 class="text-lg font-semibold text-slate-700 mb-3">Langkah 6: Nilai Preferensi</h6>
-                                <p class="text-sm text-slate-500 mb-3">Menghitung nilai preferensi setiap alternatif dengan
-                                    rumus: V<sub>i</sub> = D<sub>i</sub><sup>-</sup> / (D<sub>i</sub><sup>+</sup> +
-                                    D<sub>i</sub><sup>-</sup>)</p>
+                                <p class="text-sm text-slate-500 mb-3">Menghitung nilai preferensi setiap alternatif dengan rumus: V<sub>i</sub> = D<sub>i</sub><sup>-</sup> / (D<sub>i</sub><sup>+</sup> + D<sub>i</sub><sup>-</sup>)</p>
                                 <div class="overflow-x-auto">
                                     <table class="min-w-full divide-y divide-gray-200">
                                         <thead class="bg-gray-50">
                                             <tr>
-                                                <th
-                                                    class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                                                    Alternatif</th>
-                                                <th
-                                                    class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                                                    Nilai Preferensi (V<sub>i</sub>)</th>
+                                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Alternatif</th>
+                                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nilai Preferensi (V<sub>i</sub>)</th>
                                             </tr>
                                         </thead>
                                         <tbody class="bg-white divide-y divide-gray-200">
                                             @foreach ($hasil as $item)
                                                 <tr>
-                                                    <td class="px-4 py-2 text-sm font-medium text-gray-900">
-                                                        {{ $item['pengajuan']->nama_barang }}</td>
+                                                    <td class="px-4 py-2 text-sm font-medium text-gray-900">{{ $item['pengajuan']->nama_barang }}</td>
                                                     <td class="px-4 py-2 text-sm text-gray-500">
-                                                        <span
-                                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                                            @if ($item['nilai_preferensi'] >= 0.7) bg-green-100 text-green-800
-                                                            @elseif($item['nilai_preferensi'] >= 0.4) bg-yellow-100 text-yellow-800
-                                                            @else bg-red-100 text-red-800 @endif">
+                                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full @if ($item['nilai_preferensi'] >= 0.7) bg-green-100 text-green-800 @elseif($item['nilai_preferensi'] >= 0.4) bg-yellow-100 text-yellow-800 @else bg-red-100 text-red-800 @endif">
                                                             {{ number_format($item['nilai_preferensi'], 4) }}
                                                         </span>
                                                     </td>
@@ -407,28 +406,34 @@
                                 <h6 class="text-lg font-semibold text-slate-700 mb-3">Langkah 7: Perankingan</h6>
                                 <p class="text-sm text-slate-500 mb-3">Mengurutkan alternatif berdasarkan nilai preferensi
                                     dari tertinggi ke terendah</p>
-                                <div class="bg-blue-50 p-4 rounded-lg">
-                                    <div class="space-y-3">
+                                <div class="bg-blue-50 p-4 rounded-lg" style="background:#eff6ff; border:1px solid #e6f0ff;">
+                                    <div style="display:flex; flex-direction:column; gap:12px;">
                                         @foreach ($hasil as $index => $item)
-                                            <div class="flex items-center p-3 bg-white rounded-lg shadow-sm">
-                                                <div
-                                                    class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center
-                                                    @if ($index == 0) bg-yellow-400 text-white
-                                                    @elseif($index == 1) bg-gray-300 text-gray-800
-                                                    @elseif($index == 2) bg-amber-300 text-white
-                                                    @else bg-gray-100 text-gray-600 @endif">
+                                            @php
+                                                // palette for badges by rank (0-based index)
+                                                $palettes = [
+                                                    ['bg'=>'#F59E0B','fg'=>'#ffffff'], // 1
+                                                    ['bg'=>'#9CA3AF','fg'=>'#ffffff'], // 2
+                                                    ['bg'=>'#F97316','fg'=>'#ffffff'], // 3
+                                                    ['bg'=>'#60A5FA','fg'=>'#ffffff'], // 4
+                                                    ['bg'=>'#A78BFA','fg'=>'#ffffff'], // 5
+                                                ];
+                                                $p = $palettes[$index] ?? ['bg'=>'#F3F4F6','fg'=>'#374151'];
+                                            @endphp
+                                            <div style="display:grid; grid-template-columns:48px 1fr 160px; gap:12px; align-items:center; padding:10px; background:#ffffff; border:1px solid #e6e9ee; border-radius:8px; box-shadow:0 1px 3px rgba(15,23,42,0.04);">
+                                                <div style="width:48px; height:48px; border-radius:999px; display:flex; align-items:center; justify-content:center; background:{{ $p['bg'] }}; color:{{ $p['fg'] }}; font-weight:700;">
                                                     {{ $index + 1 }}
                                                 </div>
-                                                <div class="ml-4 flex-1">
-                                                    <div class="text-sm font-medium text-gray-900">
-                                                        {{ $item['pengajuan']->nama_barang }}</div>
-                                                    <div class="text-xs text-gray-500">Nilai Preferensi:
-                                                        {{ number_format($item['nilai_preferensi'], 4) }}</div>
+                                                <div>
+                                                    <div style="font-size:0.95rem; font-weight:700; color:#0f172a;">{{ $item['pengajuan']->nama_barang }}</div>
+                                                    <div style="font-size:0.78rem; color:#6b7280;">Nilai Preferensi: {{ number_format($item['nilai_preferensi'],4) }}</div>
                                                 </div>
-                                                <div class="text-sm font-semibold text-gray-900">
-                                                    {{ $item['pengajuan']->kode_pengajuan }}</div>
+                                                <div style="text-align:right; font-size:0.95rem; font-weight:700; color:#0f172a;">{{ $item['pengajuan']->kode_pengajuan }}</div>
                                             </div>
                                         @endforeach
+                                    </div>
+                                </div>
+                            </div>
                                     </div>
                                 </div>
                             </div>
@@ -449,7 +454,8 @@
                         <div class="p-6">
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 @foreach ($kriterias as $kriteria)
-                                    <div class="p-4 bg-gray-50 rounded-lg">
+                                    <div class="p-4 bg-gray-50 rounded-lg"
+                                         style="background:#f8fafc; border:1px solid #e5e7eb;">
                                         <div class="flex items-center justify-between mb-2">
                                             <h6 class="text-sm font-semibold text-slate-700">{{ $kriteria->nama }}</h6>
                                             <span
